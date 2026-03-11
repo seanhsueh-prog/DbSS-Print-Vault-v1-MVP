@@ -2,7 +2,7 @@
   "name": "DbSS Print Vault",
   "short_name": "Print Vault",
   "description": "Print-Tested Graphics for Apparel Creators",
-  "start_url": "./DbSS-PrintVault-v1.1.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#ffffff",
