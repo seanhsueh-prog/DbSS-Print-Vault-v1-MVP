@@ -1,10 +1,12 @@
-// DbSS Print Vault v1.0 Service Worker
-const CACHE_NAME = 'dbss-vault-cache-v1.0';
+// DbSS Print Vault v1.1 Service Worker
+const CACHE_NAME = 'dbss-vault-cache-v1.1';
 
 // App Shell 核心檔案 (這些會優先被快取)
 const APP_SHELL = [
-    './DbSS-PrintVault-v1.0.html',
+    './DbSS-PrintVault-v1.1.html',
     './manifest.json',
+    './icons/icon-192.png',
+    './icons/icon-512.png',
     'https://cdn.tailwindcss.com',
     'https://unpkg.com/react@18/umd/react.development.js',
     'https://unpkg.com/react-dom@18/umd/react-dom.development.js',
@@ -17,7 +19,7 @@ self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then((cache) => {
-                console.log('[SW] Caching App Shell');
+                console.log('[SW] Caching App Shell v1.1');
                 return cache.addAll(APP_SHELL);
             })
             .then(() => self.skipWaiting()) // 強制停止等待，立即進入 activate 階段
@@ -61,7 +63,7 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
-    // 策略 2: 對於圖片與圖庫資產 (PNG/JPG)，使用 Cache-First (快取優先)
+    // 策略 2: 對於圖片與圖庫資產 (PNG/JPG/圖示)，使用 Cache-First (快取優先)
     // 節省頻寬，提升圖庫載入速度
     if (requestUrl.pathname.endsWith('.png') || requestUrl.pathname.endsWith('.jpg') || requestUrl.pathname.endsWith('.jpeg')) {
         event.respondWith(

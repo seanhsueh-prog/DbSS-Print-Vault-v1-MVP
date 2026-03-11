@@ -8,17 +8,17 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="description" content="Print-Tested Graphics for Apparel Creators">
     
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="./manifest.json">
+    <!-- PWA Manifest (Updated path) -->
+    <link rel="manifest" href="manifest.json">
     
-    <title>DbSS Print Vault v1.0</title>
+    <title>DbSS Print Vault v1.1</title>
     
     <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
-        /* [DbSS Print Vault v1.0 - Core Layout Engine] */
+        /* [DbSS Print Vault v1.1 - Core Layout Engine] */
         html, body, #root { 
             width: 100%; height: 100dvh; margin: 0; padding: 0; 
             overflow: hidden; background: #000; 
@@ -105,7 +105,7 @@
     <script type="text/babel">
         const { useState, useEffect, useMemo } = React;
 
-        // --- 1. CONFIGURATION & DATA SCHEMA (DbSS Print Vault v1.0) ---
+        // --- 1. CONFIGURATION & DATA SCHEMA (DbSS Print Vault v1.1) ---
         // Refactored for Digital Assets / Apparel Graphics
         const CATEGORIES = [
             { id: 'si', label: 'Sumi Ink', fullName: 'Neo Sumi Ink', prefix: 'si', count: 18 },
@@ -380,7 +380,7 @@
                             </div>
 
                             <div className="mt-16 bg-gray-50 px-6 py-4 rounded-xl border border-gray-100">
-                                <span className="text-[10px] text-gray-400 tracking-widest uppercase font-semibold">Version 1.0.0</span>
+                                <span className="text-[10px] text-gray-400 tracking-widest uppercase font-semibold">Version 1.1.0</span>
                             </div>
                         </div>
                     )}
