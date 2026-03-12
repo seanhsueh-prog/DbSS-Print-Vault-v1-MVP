@@ -1,11 +1,11 @@
 {
   "name": "DbSS Print Vault",
-  "short_name": "Print Vault",
+  "short_name": "DbSS Vault",
   "description": "Print-Tested Graphics for Apparel Creators",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#ffffff",
+  "background_color": "#0B0B0B",
+  "theme_color": "#0B0B0B",
   "orientation": "portrait",
   "icons": [
     {
