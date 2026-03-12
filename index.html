@@ -6,112 +6,106 @@
     <meta name="theme-color" content="#0B0B0B">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="description" content="Print-Tested Graphics for Apparel Creators">
+    <meta name="description" content="Premium Archive Assets by DbSS STUDIO">
     
-    <!-- PWA Manifest & iOS Support -->
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
     
     <title>DbSS Print Vault</title>
     
-    <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     
     <style>
-        /* [DbSS Print Vault v2.1 - Core Layout Engine - Dark Mode] */
+        /* Core Engine - DbSS Dark Aesthetic */
         html, body, #root { 
             width: 100%; height: 100dvh; margin: 0; padding: 0; 
             overflow: hidden; background: #0B0B0B; 
             font-family: 'Inter', sans-serif;
-            -webkit-font-smoothing: antialiased;
             color: #F2F2F2;
+            -webkit-font-smoothing: antialiased;
         }
-        
         .app-container { 
             width: 100%; max-width: 480px; height: 100%; 
             display: flex; flex-direction: column; 
             background: #0B0B0B; margin: 0 auto; position: relative; 
-            border-left: 1px solid #1a1a1a; border-right: 1px solid #1a1a1a;
         }
-
-        :root {
-            --sab: env(safe-area-inset-bottom);
-            --sat: env(safe-area-inset-top);
-        }
-
-        /* Utilities */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        
-        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
-        .slide-up { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
-        /* Global Smart Image Transition */
-        .smart-img-base {
-            opacity: 0; transition: opacity 0.3s ease, transform 0.4s ease;
+        /* Splash Screen (Strategic Fade - C) */
+        .splash-layer {
+            position: fixed; inset: 0; z-index: 9999;
+            background: #0B0B0B; display: flex; align-items: center; justify-content: center;
+            opacity: 0; /* Starts transparent to wait for system icon to clear */
+            pointer-events: none;
         }
-        .smart-img-base.loaded { opacity: 1; }
+        .splash-layer.show {
+            opacity: 1; /* Fade IN */
+            transition: opacity 0.6s ease-in;
+        }
+        .splash-layer.fade-out {
+            opacity: 0; /* Fade OUT to main app */
+            transition: opacity 0.8s ease-out;
+        }
+        .splash-img { width: 100%; height: 100%; object-fit: contain; padding: 10%; }
 
-        /* Catalog Grid - Editorial Refinement */
-        .catalog-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr);
-            gap: 1px; background-color: #1a1a1a; padding-bottom: 120px;
+        /* Header Logo */
+        .header-logo {
+            height: 38px; /* Increased from 24px/28px for stronger presence */
+            object-fit: contain; margin-bottom: 8px; opacity: 0.95;
         }
-        .grid-item {
-            background: #0B0B0B; aspect-ratio: 3/4; position: relative;
-            cursor: pointer; overflow: hidden;
+
+        /* Navigation Tabs */
+        .tab-bar {
+            display: flex; width: 100%; border-bottom: 1px solid #1a1a1a;
+            background: rgba(11, 11, 11, 0.98); backdrop-filter: blur(12px);
+            position: sticky; top: 0; z-index: 40;
+        }
+        .tab-item {
+            flex: 1; text-align: center; padding: 16px 0; font-size: 11px;
+            color: #8A8A8A; transition: all 0.3s; letter-spacing: 0.5px;
+            cursor: pointer;
+        }
+        .tab-item.active { color: #F2F2F2; border-bottom: 2px solid #C6A96A; }
+
+        /* Content Grid & Subtle Backplate for Black Artworks */
+        .main-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+            background: #1a1a1a; padding-bottom: 120px;
+        }
+        .grid-cell { 
+            /* THE FIX: A subtle dark gray backplate so black PNGs are visible */
+            background: #141414; 
+            aspect-ratio: 3/4; overflow: hidden; position: relative;
             display: flex; align-items: center; justify-content: center;
         }
-        .grid-item img {
-            width: 100%; height: 100%; object-fit: contain; padding: 10px;
-            transition: transform 0.4s ease;
+        .grid-cell img {
+            width: 100%; height: 100%; object-fit: contain; padding: 8px;
+            transition: transform 0.3s ease;
         }
-        .grid-item:active img { transform: scale(0.94); }
+        .grid-cell:active img { transform: scale(0.95); }
 
-        /* Nav & Tabs - v2.1 Refined to evenly distribute without scrolling */
-        .sticky-tabs {
-            position: sticky; top: 0; z-index: 40; 
-            background: rgba(11, 11, 11, 0.95);
-            border-bottom: 1px solid #1a1a1a; 
-            display: flex; justify-content: space-between; width: 100%;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-        }
-        .tab-btn {
-            flex: 1; text-align: center;
-            padding: 16px 0; font-size: 11px; font-weight: 400; color: #8A8A8A;
-            white-space: nowrap; border-bottom: 1px solid transparent; transition: all 0.3s;
-            letter-spacing: 0.5px; cursor: pointer;
-        }
-        .tab-btn.active { color: #F2F2F2; border-bottom-color: #C6A96A; }
+        /* Modal Animation */
+        .fade-in { animation: fadeIn 0.4s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Bottom Nav */
-        .bottom-nav {
-            position: absolute; bottom: 0; left: 0; width: 100%;
-            background: rgba(11, 11, 11, 0.95); border-top: 1px solid #1a1a1a;
-            display: flex; justify-content: space-evenly;
-            padding-bottom: calc(16px + var(--sab)); padding-top: 16px; 
-            z-index: 50; backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+        /* Digital Watermark Component */
+        .digital-watermark {
+            position: absolute; right: 24px; bottom: 24px;
+            font-family: 'Inter', sans-serif; font-weight: 300;
+            font-size: 14px; letter-spacing: 0.15em;
+            color: rgba(255, 255, 255, 0.25); /* 25% Opacity White */
+            pointer-events: none; /* Crucial: clicks pass through */
+            user-select: none;
+            transform: rotate(-5deg); /* Slight artistic tilt */
+            z-index: 50;
         }
-
-        /* Splash Screen Transition */
-        .splash-screen {
-            position: absolute; inset: 0; z-index: 100;
-            background-color: #0B0B0B; display: flex; align-items: center; justify-content: center;
-            transition: opacity 0.5s ease-in-out;
-        }
-        .splash-screen.hide { opacity: 0; pointer-events: none; }
     </style>
 </head>
 <body>
     <div id="root"></div>
 
-    <!-- React Framework -->
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -119,319 +113,138 @@
     <script type="text/babel">
         const { useState, useEffect, useMemo } = React;
 
-        // --- 1. CONFIGURATION & DATA SCHEMA (v2.1 Refactored Categories) ---
+        // --- Categories Config (v2.3 Upgraded Names) ---
         const CATEGORIES = [
-            { id: 'li', label: 'Line', fullName: 'Line Art Graphics', prefix: 'li', count: 18 },
-            { id: 'in', label: 'Ink', fullName: 'Sumi Ink Style', prefix: 'in', count: 18 },
-            { id: 'ch', label: 'Characters', fullName: 'Character Illustrations', prefix: 'ch', count: 15 },
-            { id: 'an', label: 'Anime', fullName: 'Anime Aesthetics', prefix: 'an', count: 15 },
-            { id: 'am', label: 'Animals', fullName: 'Animal & Beast Motifs', prefix: 'am', count: 12 }
+            { id: 'li', label: 'Line Art', prefix: 'li', count: 18 },
+            { id: 'in', label: 'Ink Art', prefix: 'in', count: 18 },
+            { id: 'ch', label: 'Characters', prefix: 'ch', count: 15 },
+            { id: 'an', label: 'Anime', prefix: 'an', count: 15 },
+            { id: 'am', label: 'Animals', prefix: 'am', count: 12 }
         ];
 
-        const ASSET_SPECS = {
-            resolution: "4500 × 5400 px",
-            dpi: "300 DPI",
-            format: "Transparent PNG",
-            usage: "Ready for Print",
-            price: "$4.99"
-        };
-
-        // --- 2. BASE COMPONENTS ---
-        const Icon = ({ name, size=20, className="" }) => {
-            const paths = {
-                x: <path d="M18 6L6 18M6 6l12 12" />,
-                grid: <><rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" /><rect x="14" y="14" width="7" height="7" /><rect x="3" y="14" width="7" height="7" /></>,
-                info: <><circle cx="12" cy="12" r="10" /><path d="M12 16v-4M12 8h.01" /></>,
-                download: <><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" /></>
-            };
-            return (
-                <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-                    {paths[name] || null}
-                </svg>
-            );
-        };
-
-        const SmartImage = ({ prefix, index, suffix, className, onClick, style, onHide }) => {
-            const [src, setSrc] = useState('');
-            const [errorStep, setErrorStep] = useState(0);
-            const [loaded, setLoaded] = useState(false);
-
-            const candidates = useMemo(() => {
-                const sIdx = String(index);
-                return [
-                    `./${prefix}${sIdx.padStart(3, '0')}${suffix}`,
-                    `./${prefix}${sIdx.padStart(4, '0')}${suffix}`,
-                    `./${prefix}${sIdx.padStart(2, '0')}${suffix}`,
-                    `./${prefix}${index}${suffix}`
-                ];
-            }, [prefix, index, suffix]);
-
-            useEffect(() => {
-                setSrc(candidates[0]);
-                setErrorStep(0);
-                setLoaded(false);
-            }, [candidates]);
-
-            const handleError = () => {
-                const next = errorStep + 1;
-                if (next < candidates.length) {
-                    setSrc(candidates[next]);
-                    setErrorStep(next);
-                } else {
-                    if(onHide) onHide();
-                }
-            };
-
-            return (
-                <img 
-                    src={src} 
-                    className={`smart-img-base ${loaded ? 'loaded' : ''} ${className}`}
-                    alt="" 
-                    onClick={onClick}
-                    onError={handleError}
-                    onLoad={() => setLoaded(true)}
-                    style={style}
-                />
-            );
-        };
-
-        const NavBtn = ({ icon, label, active, onClick }) => (
-            <div className={`flex flex-col items-center gap-2 cursor-pointer transition-colors duration-300 w-20 ${active ? 'text-[#C6A96A]' : 'text-[#8A8A8A] hover:text-[#F2F2F2]'}`} onClick={onClick}>
-                <Icon name={icon} size={22} />
-                <span className="text-[10px] font-medium tracking-wide">{label}</span>
-            </div>
-        );
-
-        // Digital Asset Detail View
-        const AssetDetailView = ({ item, onClose }) => {
-            const handlePurchase = () => {
-                alert(`Redirecting to checkout for ${item.displayId}...`);
-            };
-
-            return (
-                <div className="fixed inset-0 z-[60] bg-[#0B0B0B] flex flex-col fade-in">
-                    <div className="absolute top-0 right-0 p-5 z-50">
-                        <button onClick={onClose} className="bg-[#111111] bg-opacity-80 backdrop-blur-md rounded-full p-2.5 transition border border-[#1a1a1a] text-[#F2F2F2] hover:bg-[#1a1a1a]">
-                            <Icon name="x" size={20} />
-                        </button>
-                    </div>
-                    
-                    {/* Image Preview Area */}
-                    <div className="flex-1 flex items-center justify-center p-8 bg-[#080808] relative overflow-hidden">
-                        <SmartImage 
-                            prefix={item.prefix} 
-                            index={item.rawIndex} 
-                            suffix="_d.png" 
-                            className="w-full h-full object-contain drop-shadow-2xl z-10 max-h-[60vh]" 
-                        />
-                    </div>
-
-                    {/* Metadata & Purchase Area */}
-                    <div className="bg-[#0B0B0B] px-8 pt-8 pb-[calc(28px+env(safe-area-inset-bottom))] border-t border-[#1a1a1a] slide-up">
-                        <div className="mb-8 flex justify-between items-start">
-                            <div>
-                                <h2 className="text-xl font-medium tracking-wide text-[#F2F2F2] mb-1">{item.displayId}</h2>
-                                <p className="text-[11px] text-[#8A8A8A] uppercase tracking-widest">{item.categoryName}</p>
-                            </div>
-                            <div className="text-right">
-                                <span className="text-lg font-light tracking-wide text-[#C6A96A]">{item.price}</span>
-                            </div>
-                        </div>
-
-                        {/* Specs Table */}
-                        <div className="mb-8 space-y-4">
-                            <div className="flex justify-between items-center pb-3 border-b border-[#1a1a1a]">
-                                <span className="text-[11px] text-[#8A8A8A] font-light tracking-wide uppercase">Resolution</span>
-                                <span className="text-[12px] font-light text-[#F2F2F2]">{item.specs.resolution}</span>
-                            </div>
-                            <div className="flex justify-between items-center pb-3 border-b border-[#1a1a1a]">
-                                <span className="text-[11px] text-[#8A8A8A] font-light tracking-wide uppercase">Quality</span>
-                                <span className="text-[12px] font-light text-[#F2F2F2]">{item.specs.dpi}</span>
-                            </div>
-                            <div className="flex justify-between items-center pb-3 border-b border-[#1a1a1a]">
-                                <span className="text-[11px] text-[#8A8A8A] font-light tracking-wide uppercase">Format</span>
-                                <span className="text-[12px] font-light text-[#F2F2F2]">{item.specs.format}</span>
-                            </div>
-                        </div>
-
-                        <button 
-                            onClick={handlePurchase}
-                            className="w-full bg-[#C6A96A] text-[#0B0B0B] py-4 rounded-sm text-[12px] font-medium tracking-widest uppercase flex items-center justify-center gap-3 hover:bg-[#d8bd82] active:scale-[0.98] transition-all">
-                            <span>Acquire Design</span>
-                        </button>
-                    </div>
-                </div>
-            );
-        };
-
-        // --- 3. MAIN APPLICATION ---
         const App = () => {
-            // App States
-            const [page, setPage] = useState('catalog');
-            const [filter, setFilter] = useState('li'); // Default to Line
-            const [detailItem, setDetailItem] = useState(null);
-            
-            // Splash Screen States
-            const [showSplash, setShowSplash] = useState(true);
-            const [fadeSplash, setFadeSplash] = useState(false);
+            const [filter, setFilter] = useState('li');
+            const [splashState, setSplashState] = useState('hidden'); // hidden -> show -> fade-out -> removed
+            const [selectedItem, setSelectedItem] = useState(null);
 
-            // Handle Splash Screen Logic (1.2s hold, then fade out)
+            // Splash Screen Logic (Strategic Fade C)
             useEffect(() => {
-                const fadeTimer = setTimeout(() => {
-                    setFadeSplash(true);
-                }, 1200);
+                // 1. Wait 0.5s for system icon to disappear, then fade IN our image
+                const timerIn = setTimeout(() => setSplashState('show'), 500);
+                
+                // 2. Hold for 1.8s total, then fade OUT
+                const timerOut = setTimeout(() => setSplashState('fade-out'), 2300);
+                
+                // 3. Remove completely from DOM
+                const timerRemove = setTimeout(() => setSplashState('removed'), 3100);
 
-                const removeTimer = setTimeout(() => {
-                    setShowSplash(false);
-                }, 1700); // 1200ms hold + 500ms fade transition
-
-                return () => {
-                    clearTimeout(fadeTimer);
-                    clearTimeout(removeTimer);
-                };
+                return () => { clearTimeout(timerIn); clearTimeout(timerOut); clearTimeout(timerRemove); };
             }, []);
-
-            const catalog = useMemo(() => {
-                let list = [];
-                CATEGORIES.forEach(cat => {
-                    for(let i=1; i<=cat.count; i++){
-                        const formattedIndex = String(i).padStart(3, '0');
-                        list.push({
-                            uid: `${cat.id}-${i}`,
-                            displayId: `${cat.prefix.toUpperCase()}-${formattedIndex}`,
-                            categoryId: cat.id,
-                            categoryName: cat.fullName,
-                            prefix: cat.prefix,
-                            rawIndex: i,
-                            price: ASSET_SPECS.price,
-                            specs: ASSET_SPECS,
-                            buyUrl: "#"
-                        });
-                    }
-                });
-                return list;
-            }, []);
-
-            const filteredItems = useMemo(() => {
-                return catalog.filter(c => c.categoryId === filter);
-            }, [catalog, filter]);
 
             return (
-                <div className="app-container pt-[var(--sat)]">
+                <div className="app-container pt-[env(safe-area-inset-top)]">
                     
-                    {/* SPLASH SCREEN LAYER */}
-                    {showSplash && (
-                        <div className={`splash-screen ${fadeSplash ? 'hide' : ''}`}>
-                            <img 
-                                src="./splash-dbss.png" 
-                                alt="DbSS Intro" 
-                                className="w-full h-full object-contain p-4" 
-                                onError={(e) => { e.target.style.display = 'none'; }} 
-                            />
-                        </div>
-                    )}
-                    
-                    {/* PAGE: CATALOG */}
-                    {page === 'catalog' && (
-                        <div className="flex flex-col h-full bg-[#0B0B0B]">
-                            {/* Branded Header */}
-                            <div className="bg-[#0B0B0B] pt-8 pb-5 px-6 flex flex-col items-center text-center z-10 relative">
-                                <img src="./logo-dbss.png" alt="DbSS" className="h-7 object-contain mb-3 opacity-90" onError={(e) => { e.target.style.display = 'none'; }} />
-                                <p className="text-[10px] text-[#8A8A8A] font-light tracking-widest uppercase">
-                                    Archive Foundation
-                                </p>
-                            </div>
-
-                            {/* Sticky Category Tabs (v2.1 Non-scrolling, Even distribution) */}
-                            <div className="sticky-tabs">
-                                {CATEGORIES.map(t => (
-                                    <button key={t.id} onClick={() => setFilter(t.id)} 
-                                        className={`tab-btn ${filter === t.id ? 'active' : ''}`}>
-                                        {t.label}
-                                    </button>
-                                ))}
-                            </div>
-
-                            {/* Catalog Grid */}
-                            <div className="flex-1 overflow-y-auto no-scrollbar content-area">
-                                <div className="catalog-grid">
-                                    {filteredItems.map(item => (
-                                        <div id={`cat-${item.uid}`} key={item.uid} className="grid-item group" onClick={() => setDetailItem(item)}>
-                                            <SmartImage 
-                                                prefix={item.prefix} 
-                                                index={item.rawIndex} 
-                                                suffix="_d.png" 
-                                                className="w-full h-full object-contain opacity-90 group-hover:opacity-100 transition-opacity duration-500"
-                                                onHide={() => {
-                                                    const el = document.getElementById(`cat-${item.uid}`);
-                                                    if(el) el.style.display = 'none';
-                                                }}
-                                            />
-                                            <div className="absolute bottom-2 left-0 w-full text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                                <span className="text-[9px] font-light text-[#8A8A8A] tracking-wider">
-                                                    {item.displayId}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                                <div className="py-20 text-center bg-[#0B0B0B]">
-                                    <div className="w-4 h-[1px] bg-[#1a1a1a] mx-auto mb-4"></div>
-                                    <span className="text-[9px] text-[#8A8A8A] tracking-widest uppercase font-light">End of Archive</span>
-                                </div>
-                            </div>
+                    {/* 1. SPLASH SCREEN (Two-stage animation) */}
+                    {splashState !== 'removed' && (
+                        <div className={`splash-layer ${splashState}`}>
+                            <img src="./splash-dbss.png" className="splash-img" alt="DbSS Introduction" 
+                                 onError={(e) => { e.target.style.display = 'none'; }} />
                         </div>
                     )}
 
-                    {/* PAGE: INFO */}
-                    {page === 'info' && (
-                        <div className="h-full flex flex-col items-center justify-center p-10 text-center bg-[#0B0B0B] fade-in">
-                            <img src="./logo-dbss.png" alt="DbSS" className="h-8 object-contain mb-10 opacity-90" onError={(e) => { e.target.style.display = 'none'; }} />
+                    {/* 2. HEADER (Enlarged Logo) */}
+                    <header className="pt-8 pb-5 flex flex-col items-center bg-[#0B0B0B] z-10 relative">
+                        <img src="./logo-dbss.png" className="header-logo" alt="DbSS STUDIO" 
+                             onError={(e) => { e.target.style.display = 'none'; }} />
+                        <span className="text-[9px] tracking-[0.2em] text-[#8A8A8A] uppercase font-light">
+                            Archive Foundation
+                        </span>
+                    </header>
+
+                    {/* 3. TABS (Updated Names) */}
+                    <nav className="tab-bar">
+                        {CATEGORIES.map(cat => (
+                            <div key={cat.id} 
+                                 onClick={() => setFilter(cat.id)}
+                                 className={`tab-item ${filter === cat.id ? 'active' : ''}`}>
+                                {cat.label}
+                            </div>
+                        ))}
+                    </nav>
+
+                    {/* 4. CONTENT GRID (With Subtle Backplates for Black PNGs) */}
+                    <main className="flex-1 overflow-y-auto no-scrollbar">
+                        <div className="main-grid">
+                            {[...Array(CATEGORIES.find(c => c.id === filter).count)].map((_, i) => {
+                                const id = i + 1;
+                                // Simple resolution sequence for now
+                                const imgPath = `./${filter}${String(id).padStart(3, '0')}_d.png`;
+                                const fallbackPath = `./${filter}${String(id).padStart(2, '0')}_d.png`;
+                                
+                                return (
+                                    <div key={i} className="grid-cell" onClick={() => setSelectedItem({ path: imgPath, fallback: fallbackPath, id: `${filter.toUpperCase()}-${String(id).padStart(3, '0')}` })}>
+                                        <img src={imgPath} loading="lazy" 
+                                             onError={(e) => {
+                                                 // Try fallback, if fails hide container
+                                                 if (e.target.src.includes(imgPath)) {
+                                                     e.target.src = fallbackPath;
+                                                 } else {
+                                                     e.target.parentElement.style.display = 'none';
+                                                 }
+                                             }} />
+                                    </div>
+                                );
+                            })}
+                        </div>
+                        <div className="py-16 text-center bg-[#0B0B0B]">
+                            <div className="w-6 h-[1px] bg-[#1a1a1a] mx-auto mb-4"></div>
+                            <span className="text-[9px] text-[#8A8A8A] tracking-widest uppercase font-light">End of Archive</span>
+                        </div>
+                    </main>
+
+                    {/* 5. DETAIL MODAL WITH DIGITAL WATERMARK */}
+                    {selectedItem && (
+                        <div className="fixed inset-0 z-[100] bg-[#0B0B0B] fade-in flex flex-col">
+                            {/* Top Actions */}
+                            <div className="p-6 flex justify-between items-center bg-gradient-to-b from-[#0B0B0B] to-transparent z-10">
+                                <span className="text-[#8A8A8A] text-[10px] tracking-widest uppercase">{selectedItem.id}</span>
+                                <button onClick={() => setSelectedItem(null)} className="text-[#F2F2F2] p-2 hover:opacity-70 transition">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M18 6L6 18M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </div>
                             
-                            <div className="w-8 h-[1px] bg-[#C6A96A] mb-10 opacity-50"></div>
-                            
-                            <div className="space-y-6 max-w-[280px]">
-                                <p className="text-[12px] text-[#F2F2F2] leading-relaxed font-light tracking-wide">
-                                    Curated design assets for visionary apparel creation.
-                                </p>
-                                <p className="text-[11px] text-[#8A8A8A] leading-relaxed font-light tracking-wide">
-                                    Optimized at 4500×5400 px, 300 DPI, provided as transparent PNGs to ensure flawless print results.
-                                </p>
+                            {/* Image Preview Area */}
+                            <div className="flex-1 flex items-center justify-center p-6 relative overflow-hidden bg-[#0F0F0F]">
+                                <img src={selectedItem.path} className="w-full h-full object-contain max-h-[70vh]" alt="Detail" 
+                                     onError={(e) => { e.target.src = selectedItem.fallback; }}/>
+                                
+                                {/* 🛡️ THE DIGITAL WATERMARK */}
+                                <div className="digital-watermark">DbSSTUDIO</div>
                             </div>
-
-                            <div className="mt-20 px-4 py-2 border border-[#1a1a1a] rounded-sm">
-                                <span className="text-[9px] text-[#8A8A8A] tracking-widest uppercase font-light">Version 2.1</span>
+                            
+                            {/* Metadata & Purchase */}
+                            <div className="px-8 pt-8 pb-[calc(32px+env(safe-area-inset-bottom))] bg-[#0B0B0B] border-t border-[#1a1a1a]">
+                                <div className="flex justify-between items-end mb-8">
+                                    <div>
+                                        <h3 className="text-[#F2F2F2] text-xl font-light tracking-wide">{selectedItem.id}</h3>
+                                        <p className="text-[#8A8A8A] text-[11px] tracking-[0.2em] uppercase mt-2">Premium Asset</p>
+                                    </div>
+                                    <span className="text-[#C6A96A] text-lg font-light tracking-wide">$4.99</span>
+                                </div>
+                                <button className="w-full bg-[#C6A96A] text-[#0B0B0B] py-4 rounded-sm text-[12px] tracking-[0.2em] uppercase font-medium hover:bg-[#d8bd82] active:scale-[0.98] transition-all">
+                                    Acquire Design
+                                </button>
                             </div>
                         </div>
                     )}
-
-                    {/* MODALS */}
-                    {detailItem && <AssetDetailView item={detailItem} onClose={() => setDetailItem(null)} />}
-
-                    {/* NAVIGATION */}
-                    <div className="bottom-nav">
-                        <NavBtn icon="grid" label="Archive" active={page==='catalog'} onClick={()=>setPage('catalog')} />
-                        <NavBtn icon="info" label="About" active={page==='info'} onClick={()=>setPage('info')} />
-                    </div>
                 </div>
             );
         };
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
-
-        // --- 4. SERVICE WORKER REGISTRATION ---
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./service-worker.js')
-                    .then(registration => {
-                        console.log('SW registered successfully:', registration.scope);
-                    })
-                    .catch(error => {
-                        console.log('SW registration failed:', error);
-                    });
-            });
-        }
     </script>
 </body>
 </html>

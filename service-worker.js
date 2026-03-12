@@ -1,7 +1,7 @@
-// DbSS Print Vault v2.1 Service Worker
-const CACHE_NAME = 'dbss-vault-cache-v2.1';
+// DbSS Print Vault v2.3 Service Worker
+const CACHE_NAME = 'dbss-vault-cache-v2.3';
 
-// App Shell 核心檔案 (加入 splash-dbss.png 確保開場動畫秒開)
+// App Shell 核心檔案 (包含 splash-dbss.png 與所有系統所需資源)
 const APP_SHELL = [
     './',
     './index.html',
@@ -23,7 +23,7 @@ self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then((cache) => {
-                console.log('[SW] Caching App Shell v2.1');
+                console.log('[SW] Caching App Shell v2.3');
                 return cache.addAll(APP_SHELL);
             })
             .then(() => self.skipWaiting())
