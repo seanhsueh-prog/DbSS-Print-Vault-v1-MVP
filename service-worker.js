@@ -1,12 +1,13 @@
-// DbSS Print Vault v2.0 Service Worker
-const CACHE_NAME = 'dbss-vault-cache-v2.0';
+// DbSS Print Vault v2.1 Service Worker
+const CACHE_NAME = 'dbss-vault-cache-v2.1';
 
-// App Shell 核心檔案 (固定入口為 index.html)
+// App Shell 核心檔案 (加入 splash-dbss.png 確保開場動畫秒開)
 const APP_SHELL = [
     './',
     './index.html',
     './manifest.json',
     './logo-dbss.png',
+    './splash-dbss.png',
     './icons/icon-192.png',
     './icons/icon-512.png',
     './icons/apple-touch-icon.png',
@@ -22,7 +23,7 @@ self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then((cache) => {
-                console.log('[SW] Caching App Shell v2.0');
+                console.log('[SW] Caching App Shell v2.1');
                 return cache.addAll(APP_SHELL);
             })
             .then(() => self.skipWaiting())

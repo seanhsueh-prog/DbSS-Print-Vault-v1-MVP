@@ -19,7 +19,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     
     <style>
-        /* [DbSS Print Vault v2.0 - Core Layout Engine - Dark Mode] */
+        /* [DbSS Print Vault v2.1 - Core Layout Engine - Dark Mode] */
         html, body, #root { 
             width: 100%; height: 100dvh; margin: 0; padding: 0; 
             overflow: hidden; background: #0B0B0B; 
@@ -72,19 +72,20 @@
         }
         .grid-item:active img { transform: scale(0.94); }
 
-        /* Nav & Tabs */
+        /* Nav & Tabs - v2.1 Refined to evenly distribute without scrolling */
         .sticky-tabs {
             position: sticky; top: 0; z-index: 40; 
             background: rgba(11, 11, 11, 0.95);
             border-bottom: 1px solid #1a1a1a; 
-            display: flex; overflow-x: auto;
+            display: flex; justify-content: space-between; width: 100%;
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
         }
         .tab-btn {
-            padding: 16px 20px; font-size: 12px; font-weight: 400; color: #8A8A8A;
+            flex: 1; text-align: center;
+            padding: 16px 0; font-size: 11px; font-weight: 400; color: #8A8A8A;
             white-space: nowrap; border-bottom: 1px solid transparent; transition: all 0.3s;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.5px; cursor: pointer;
         }
         .tab-btn.active { color: #F2F2F2; border-bottom-color: #C6A96A; }
 
@@ -97,6 +98,14 @@
             z-index: 50; backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
         }
+
+        /* Splash Screen Transition */
+        .splash-screen {
+            position: absolute; inset: 0; z-index: 100;
+            background-color: #0B0B0B; display: flex; align-items: center; justify-content: center;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .splash-screen.hide { opacity: 0; pointer-events: none; }
     </style>
 </head>
 <body>
@@ -110,14 +119,13 @@
     <script type="text/babel">
         const { useState, useEffect, useMemo } = React;
 
-        // --- 1. CONFIGURATION & DATA SCHEMA ---
+        // --- 1. CONFIGURATION & DATA SCHEMA (v2.1 Refactored Categories) ---
         const CATEGORIES = [
-            { id: 'si', label: 'Sumi Ink', fullName: 'Neo Sumi Ink', prefix: 'si', count: 18 },
-            { id: 'gp', label: 'Graffiti', fullName: 'Graffiti Philosophy', prefix: 'gp', count: 18 },
-            { id: 'sb', label: 'Skull Bloom', fullName: 'Dark Skull Bloom', prefix: 'sb', count: 15 },
-            { id: 'af', label: 'Avant-Garde', fullName: 'Avant-Garde Fashion Ink', prefix: 'af', count: 15 },
-            { id: 'at', label: 'Totems', fullName: 'Abstract Symbol Totems', prefix: 'at', count: 12 },
-            { id: 'ml', label: 'Minimal', fullName: 'Minimal Line Graphics', prefix: 'ml', count: 12 }
+            { id: 'li', label: 'Line', fullName: 'Line Art Graphics', prefix: 'li', count: 18 },
+            { id: 'in', label: 'Ink', fullName: 'Sumi Ink Style', prefix: 'in', count: 18 },
+            { id: 'ch', label: 'Characters', fullName: 'Character Illustrations', prefix: 'ch', count: 15 },
+            { id: 'an', label: 'Anime', fullName: 'Anime Aesthetics', prefix: 'an', count: 15 },
+            { id: 'am', label: 'Animals', fullName: 'Animal & Beast Motifs', prefix: 'am', count: 12 }
         ];
 
         const ASSET_SPECS = {
@@ -194,7 +202,7 @@
             </div>
         );
 
-        // Digital Asset Detail View (Editorial Refinement)
+        // Digital Asset Detail View
         const AssetDetailView = ({ item, onClose }) => {
             const handlePurchase = () => {
                 alert(`Redirecting to checkout for ${item.displayId}...`);
@@ -208,7 +216,7 @@
                         </button>
                     </div>
                     
-                    {/* Image Preview Area - Editorial Style */}
+                    {/* Image Preview Area */}
                     <div className="flex-1 flex items-center justify-center p-8 bg-[#080808] relative overflow-hidden">
                         <SmartImage 
                             prefix={item.prefix} 
@@ -218,7 +226,7 @@
                         />
                     </div>
 
-                    {/* Metadata & Purchase Area - Clean & Minimal */}
+                    {/* Metadata & Purchase Area */}
                     <div className="bg-[#0B0B0B] px-8 pt-8 pb-[calc(28px+env(safe-area-inset-bottom))] border-t border-[#1a1a1a] slide-up">
                         <div className="mb-8 flex justify-between items-start">
                             <div>
@@ -230,7 +238,7 @@
                             </div>
                         </div>
 
-                        {/* Specs Table - Lighter Editorial Lines */}
+                        {/* Specs Table */}
                         <div className="mb-8 space-y-4">
                             <div className="flex justify-between items-center pb-3 border-b border-[#1a1a1a]">
                                 <span className="text-[11px] text-[#8A8A8A] font-light tracking-wide uppercase">Resolution</span>
@@ -258,9 +266,30 @@
 
         // --- 3. MAIN APPLICATION ---
         const App = () => {
+            // App States
             const [page, setPage] = useState('catalog');
-            const [filter, setFilter] = useState('si');
+            const [filter, setFilter] = useState('li'); // Default to Line
             const [detailItem, setDetailItem] = useState(null);
+            
+            // Splash Screen States
+            const [showSplash, setShowSplash] = useState(true);
+            const [fadeSplash, setFadeSplash] = useState(false);
+
+            // Handle Splash Screen Logic (1.2s hold, then fade out)
+            useEffect(() => {
+                const fadeTimer = setTimeout(() => {
+                    setFadeSplash(true);
+                }, 1200);
+
+                const removeTimer = setTimeout(() => {
+                    setShowSplash(false);
+                }, 1700); // 1200ms hold + 500ms fade transition
+
+                return () => {
+                    clearTimeout(fadeTimer);
+                    clearTimeout(removeTimer);
+                };
+            }, []);
 
             const catalog = useMemo(() => {
                 let list = [];
@@ -290,19 +319,30 @@
             return (
                 <div className="app-container pt-[var(--sat)]">
                     
+                    {/* SPLASH SCREEN LAYER */}
+                    {showSplash && (
+                        <div className={`splash-screen ${fadeSplash ? 'hide' : ''}`}>
+                            <img 
+                                src="./splash-dbss.png" 
+                                alt="DbSS Intro" 
+                                className="w-full h-full object-contain p-4" 
+                                onError={(e) => { e.target.style.display = 'none'; }} 
+                            />
+                        </div>
+                    )}
+                    
                     {/* PAGE: CATALOG */}
                     {page === 'catalog' && (
                         <div className="flex flex-col h-full bg-[#0B0B0B]">
                             {/* Branded Header */}
                             <div className="bg-[#0B0B0B] pt-8 pb-5 px-6 flex flex-col items-center text-center z-10 relative">
-                                {/* Using the requested horizontal logo */}
                                 <img src="./logo-dbss.png" alt="DbSS" className="h-7 object-contain mb-3 opacity-90" onError={(e) => { e.target.style.display = 'none'; }} />
                                 <p className="text-[10px] text-[#8A8A8A] font-light tracking-widest uppercase">
                                     Archive Foundation
                                 </p>
                             </div>
 
-                            {/* Sticky Category Tabs */}
+                            {/* Sticky Category Tabs (v2.1 Non-scrolling, Even distribution) */}
                             <div className="sticky-tabs">
                                 {CATEGORIES.map(t => (
                                     <button key={t.id} onClick={() => setFilter(t.id)} 
@@ -360,7 +400,7 @@
                             </div>
 
                             <div className="mt-20 px-4 py-2 border border-[#1a1a1a] rounded-sm">
-                                <span className="text-[9px] text-[#8A8A8A] tracking-widest uppercase font-light">Version 2.0</span>
+                                <span className="text-[9px] text-[#8A8A8A] tracking-widest uppercase font-light">Version 2.1</span>
                             </div>
                         </div>
                     )}
