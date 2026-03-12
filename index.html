@@ -10,18 +10,17 @@
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
     
-    <title>DbSS Print Vault</title>
+    <title>DbSS Print Vault v2.6</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     
     <style>
-        /* --- 核心底色設定 --- */
+        /* --- 基礎環境 --- */
         html, body, #root { 
             width: 100%; height: 100dvh; margin: 0; padding: 0; 
             overflow: hidden; background: #0B0B0B; 
-            font-family: 'Inter', sans-serif;
-            color: #F2F2F2;
+            font-family: 'Inter', sans-serif; color: #F2F2F2;
             -webkit-font-smoothing: antialiased;
         }
         .app-container { 
@@ -32,28 +31,44 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* --- 1. 開場動畫 (修正版：從 0 秒開始強制遮蔽) --- */
+        /* --- 1. 開場動畫 (v2.6 震撼放大版) --- */
         .splash-layer {
             position: fixed; inset: 0; z-index: 9999;
             background: #0B0B0B; display: flex; align-items: center; justify-content: center;
-            opacity: 1; /* 起始即完全不透明 */
-            pointer-events: auto;
-            transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 1; pointer-events: auto;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .splash-layer.fade-out { opacity: 0; pointer-events: none; }
-        .splash-img { width: 100%; height: 100%; object-fit: contain; padding: 12%; }
+        .splash-img { 
+            width: 100%; height: 100%; 
+            object-fit: contain; 
+            padding: 0; /* 移除邊距，讓圖檔頂天立地 */
+            transform: scale(1.05); /* 輕微放大感 */
+        }
 
-        /* --- 2. 黑色圖檔救援：微光背板設計 --- */
+        /* --- 2. 標誌與導覽 --- */
+        .header-logo { height: 42px; object-fit: contain; margin-bottom: 8px; }
+        
+        .tab-bar {
+            display: flex; width: 100%; border-bottom: 1px solid #1a1a1a;
+            background: #0B0B0B; position: sticky; top: 0; z-index: 40;
+        }
+        .tab-item {
+            flex: 1; text-align: center; padding: 16px 0; font-size: 10px;
+            color: #8A8A8A; letter-spacing: 0.5px; cursor: pointer;
+            transition: all 0.3s; text-transform: uppercase;
+        }
+        .tab-item.active { color: #F2F2F2; border-bottom: 2px solid #C6A96A; }
+
+        /* --- 3. 網格設計 (背板亮度調高以救援黑色圖檔) --- */
         .main-grid {
             display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
             background: #1a1a1a; padding-bottom: 140px;
         }
         .grid-cell { 
-            /* 使用較淺的炭灰色，讓黑色 PNG 有輪廓感 */
-            background: #1A1A1A; 
+            background: #1C1C1C; /* 提高到 #1C1C1C，確保黑色線條可見 */
             aspect-ratio: 3/4; overflow: hidden; position: relative;
             display: flex; align-items: center; justify-content: center;
-            border: 0.5px solid rgba(255, 255, 255, 0.03);
         }
         .grid-cell img {
             width: 100%; height: 100%; object-fit: contain; padding: 10px;
@@ -61,17 +76,17 @@
         }
         .grid-cell img.loaded { opacity: 1; }
 
-        /* --- 3. 頂級數位浮水印 (對角線大面積低透明度) --- */
+        /* --- 4. 終極數位鋼印 (對角線大面積、極淡透明度) --- */
         .watermark-overlay {
             position: absolute; top: 50%; left: 50%;
             transform: translate(-50%, -50%) rotate(-35deg);
-            font-size: 10vw; font-weight: 300; letter-spacing: 0.2em;
-            color: rgba(255, 255, 255, 0.06); /* 極低透明度，不干擾視覺但具備防盜力 */
+            font-size: 11vw; font-weight: 600; letter-spacing: 0.25em;
+            color: rgba(255, 255, 255, 0.04); /* 4% 透明度：高端隱形鋼印質感 */
             white-space: nowrap; pointer-events: none; user-select: none;
             z-index: 50;
         }
 
-        /* --- 4. 底部導覽列恢復 --- */
+        /* --- 5. 底部導覽列 --- */
         .bottom-nav {
             position: absolute; bottom: 0; left: 0; width: 100%;
             background: rgba(11, 11, 11, 0.98); border-top: 1px solid #1a1a1a;
@@ -86,19 +101,6 @@
         }
         .nav-btn.active { color: #C6A96A; }
 
-        /* 分類標籤 */
-        .tab-bar {
-            display: flex; width: 100%; border-bottom: 1px solid #1a1a1a;
-            background: #0B0B0B; position: sticky; top: 0; z-index: 40;
-        }
-        .tab-item {
-            flex: 1; text-align: center; padding: 16px 0; font-size: 10px;
-            color: #8A8A8A; letter-spacing: 0.5px; cursor: pointer;
-            transition: all 0.3s; text-transform: uppercase;
-        }
-        .tab-item.active { color: #F2F2F2; border-bottom: 2px solid #C6A96A; }
-
-        /* 動畫 */
         .fade-in { animation: fadeIn 0.4s ease forwards; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
@@ -111,7 +113,7 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <script type="text/babel">
-        const { useState, useEffect } = React;
+        const { useState, useEffect, useMemo } = React;
 
         const CATEGORIES = [
             { id: 'li', label: 'Line Art', prefix: 'li', count: 18 },
@@ -121,6 +123,44 @@
             { id: 'am', label: 'Animals', prefix: 'am', count: 12 }
         ];
 
+        // --- 智慧圖檔載入器 (v2.6 智慧引擎) ---
+        const SmartImage = ({ prefix, index, onSelectItem }) => {
+            const [errorStep, setErrorStep] = useState(0);
+            const [loaded, setLoaded] = useState(false);
+
+            // 產出所有可能的命名組合供搜尋
+            const candidates = useMemo(() => {
+                const sIdx = String(index);
+                const p = prefix.toLowerCase();
+                const P = prefix.toUpperCase();
+                return [
+                    `./${p}${sIdx.padStart(3, '0')}.png`,    // in001.png (Option B)
+                    `./${p}${index}.png`,                 // in1.png
+                    `./${P}-${index}.png`,               // IN-1.png (User habit)
+                    `./${p}${sIdx.padStart(3, '0')}_d.png`, // in001_d.png (Previous test)
+                    `./${p}${index}.jpg`                  // in1.jpg (Fallback)
+                ];
+            }, [prefix, index]);
+
+            const handleError = () => {
+                if (errorStep < candidates.length - 1) {
+                    setErrorStep(prev => prev + 1);
+                }
+            };
+
+            return (
+                <div className="grid-cell" onClick={() => onSelectItem(candidates[errorStep], index)}>
+                    <img 
+                        src={candidates[errorStep]} 
+                        className={loaded ? 'loaded' : ''}
+                        onLoad={() => setLoaded(true)}
+                        onError={handleError}
+                        loading="lazy"
+                    />
+                </div>
+            );
+        };
+
         const App = () => {
             const [page, setPage] = useState('archive');
             const [filter, setFilter] = useState('li');
@@ -129,27 +169,28 @@
             const [selectedItem, setSelectedItem] = useState(null);
 
             useEffect(() => {
-                // 開場邏輯：系統啟動 1.8秒後淡出，2.6秒後移除
-                const t1 = setTimeout(() => setSplashFade(true), 1800);
-                const t2 = setTimeout(() => setSplashActive(false), 2600);
+                const t1 = setTimeout(() => setSplashFade(true), 2000);
+                const t2 = setTimeout(() => setSplashActive(false), 2800);
                 return () => { clearTimeout(t1); clearTimeout(t2); };
             }, []);
+
+            const currentCategory = useMemo(() => CATEGORIES.find(c => c.id === filter), [filter]);
 
             return (
                 <div className="app-container pt-[env(safe-area-inset-top)]">
                     
-                    {/* 1. 開場動畫層 */}
+                    {/* 1. 開場動畫層 (放大滿版) */}
                     {splashActive && (
                         <div className={`splash-layer ${splashFade ? 'fade-out' : ''}`}>
                             <img src="./splash-dbss.png" className="splash-img" alt="DbSS" />
                         </div>
                     )}
 
-                    {/* 2. 頁面內容：ARCHIVE (圖庫) */}
+                    {/* 2. 頁面內容：ARCHIVE */}
                     {page === 'archive' && (
                         <>
                             <header className="pt-8 pb-5 flex flex-col items-center">
-                                <img src="./logo-dbss.png" className="h-10 object-contain mb-2" alt="DbSS" />
+                                <img src="./logo-dbss.png" className="header-logo" alt="DbSS" />
                                 <span className="text-[9px] tracking-[0.2em] text-[#8A8A8A] uppercase font-light">Archive Foundation</span>
                             </header>
 
@@ -165,29 +206,23 @@
 
                             <main className="flex-1 overflow-y-auto no-scrollbar">
                                 <div className="main-grid">
-                                    {[...Array(CATEGORIES.find(c => c.id === filter).count)].map((_, i) => {
-                                        const id = i + 1;
-                                        const imgPath = `./${filter}${String(id).padStart(3, '0')}_d.png`;
-                                        return (
-                                            <div key={i} className="grid-cell" onClick={() => setSelectedItem({ path: imgPath, id: `${filter.toUpperCase()}-${id}` })}>
-                                                <img src={imgPath} 
-                                                     onLoad={(e) => e.target.classList.add('loaded')}
-                                                     onError={(e) => {
-                                                         const fallback = `./${filter}${id}_d.png`;
-                                                         if (!e.target.src.includes(fallback)) e.target.src = fallback;
-                                                     }} />
-                                            </div>
-                                        );
-                                    })}
+                                    {[...Array(currentCategory.count)].map((_, i) => (
+                                        <SmartImage 
+                                            key={`${filter}-${i}`} 
+                                            prefix={currentCategory.prefix} 
+                                            index={i + 1} 
+                                            onSelectItem={(path, id) => setSelectedItem({ path, id: `${currentCategory.label.toUpperCase()}-${id}` })}
+                                        />
+                                    ))}
                                 </div>
                             </main>
                         </>
                     )}
 
-                    {/* 3. 頁面內容：ABOUT (關於) */}
+                    {/* 3. 頁面內容：ABOUT */}
                     {page === 'info' && (
                         <div className="flex-1 flex flex-col items-center justify-center p-12 text-center fade-in">
-                            <img src="./logo-dbss.png" className="h-8 mb-12 opacity-80" />
+                            <img src="./logo-dbss.png" className="h-10 mb-12 opacity-90" />
                             <div className="w-8 h-[1px] bg-[#C6A96A] mb-12"></div>
                             <p className="text-[13px] text-[#F2F2F2] leading-relaxed font-light tracking-wide mb-6">
                                 DbSS STUDIO: Premium Design Archive for visionary apparel creators.
@@ -196,16 +231,16 @@
                                 Optimized at 4500x5400 px / 300 DPI.<br/>
                                 Built for high-performance garment printing.
                             </p>
-                            <div className="mt-20 py-2 px-4 border border-[#1a1a1a] rounded-full">
-                                <span className="text-[9px] text-[#555] tracking-widest uppercase">Version 2.5</span>
+                            <div className="mt-20 py-2 px-6 border border-[#1a1a1a] rounded-full">
+                                <span className="text-[9px] text-[#555] tracking-widest uppercase">Version 2.6.0 Stable</span>
                             </div>
                         </div>
                     )}
 
-                    {/* 4. 詳情彈窗 (包含全新大面積浮水印) */}
+                    {/* 4. 詳情彈窗 (浮水印升級) */}
                     {selectedItem && (
                         <div className="fixed inset-0 z-[100] bg-[#0B0B0B] fade-in flex flex-col">
-                            <div className="p-6 flex justify-between items-center">
+                            <div className="p-6 flex justify-between items-center bg-gradient-to-b from-[#0B0B0B] to-transparent">
                                 <span className="text-[#8A8A8A] text-[10px] tracking-widest uppercase">{selectedItem.id}</span>
                                 <button onClick={() => setSelectedItem(null)} className="text-[#F2F2F2] p-2">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2">
@@ -216,11 +251,10 @@
                             
                             <div className="flex-1 flex items-center justify-center p-6 relative overflow-hidden bg-[#121212]">
                                 <img src={selectedItem.path} className="w-full h-full object-contain max-h-[70vh] z-10" alt="Asset" />
-                                {/* --- 🛡️ 高級對角線浮水印 --- */}
                                 <div className="watermark-overlay">DbSSTUDIO</div>
                             </div>
                             
-                            <div className="p-10 border-t border-[#1a1a1a]">
+                            <div className="p-10 border-t border-[#1a1a1a] bg-[#0B0B0B]">
                                 <h3 className="text-[#F2F2F2] text-xl font-light tracking-wide mb-1">{selectedItem.id}</h3>
                                 <p className="text-[#8A8A8A] text-[11px] tracking-widest uppercase mb-10">Digital Masterpiece</p>
                                 <button className="w-full bg-[#C6A96A] text-[#0B0B0B] py-4 text-[12px] tracking-widest uppercase font-medium active:scale-95 transition-transform">
