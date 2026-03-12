@@ -1,7 +1,10 @@
-// DbSS Print Vault v2.3 Service Worker
-const CACHE_NAME = 'dbss-vault-cache-v2.3';
+/**
+ * DbSS Print Vault v2.4 - Service Worker
+ * * 任務：強制更新快取，確保 v2.4 的「零閃爍」開場邏輯生效
+ */
 
-// App Shell 核心檔案 (包含 splash-dbss.png 與所有系統所需資源)
+const CACHE_NAME = 'dbss-vault-cache-v2.4';
+
 const APP_SHELL = [
     './',
     './index.html',
@@ -18,74 +21,37 @@ const APP_SHELL = [
     'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap'
 ];
 
-// Install Event: 快取 App Shell
+// Install Event: 強制安裝並快取最新資源
 self.addEventListener('install', (event) => {
     event.waitUntil(
-        caches.open(CACHE_NAME)
-            .then((cache) => {
-                console.log('[SW] Caching App Shell v2.3');
-                return cache.addAll(APP_SHELL);
-            })
-            .then(() => self.skipWaiting())
+        caches.open(CACHE_NAME).then((cache) => {
+            console.log('[SW] v2.4 正在快取核心資源...');
+            return cache.addAll(APP_SHELL);
+        })
     );
+    self.skipWaiting();
 });
 
-// Activate Event: 清除舊版快取
+// Activate Event: 清除舊版快取 (v2.3 以前的都會被刪除)
 self.addEventListener('activate', (event) => {
     event.waitUntil(
-        caches.keys().then((cacheNames) => {
-            return Promise.all(
-                cacheNames.map((cacheName) => {
-                    if (cacheName !== CACHE_NAME) {
-                        console.log('[SW] Deleting old cache:', cacheName);
-                        return caches.delete(cacheName);
-                    }
-                })
-            );
-        }).then(() => self.clients.claim())
+        caches.keys().then((keys) => Promise.all(
+            keys.map((key) => {
+                if (key !== CACHE_NAME) {
+                    console.log('[SW] 正在清理舊快取:', key);
+                    return caches.delete(key);
+                }
+            })
+        ))
     );
+    self.clients.claim();
 });
 
-// Fetch Event: 攔截請求並應用快取策略
+// Fetch Event: 攔截請求，優先使用快取以達到秒開效果
 self.addEventListener('fetch', (event) => {
-    const requestUrl = new URL(event.request.url);
-
-    // 策略 1: 對於主 HTML 與根目錄，使用 Network-First
-    if (requestUrl.pathname.endsWith('.html') || requestUrl.pathname.endsWith('/') || event.request.mode === 'navigate') {
-        event.respondWith(
-            fetch(event.request)
-                .then((response) => {
-                    const responseClone = response.clone();
-                    caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
-                    return response;
-                })
-                .catch(() => caches.match(event.request))
-        );
-        return;
-    }
-
-    // 策略 2: 圖片與圖庫資產 (Cache-First)
-    if (requestUrl.pathname.endsWith('.png') || requestUrl.pathname.endsWith('.jpg') || requestUrl.pathname.endsWith('.jpeg')) {
-        event.respondWith(
-            caches.match(event.request).then((cachedResponse) => {
-                if (cachedResponse) return cachedResponse;
-                return fetch(event.request).then((networkResponse) => {
-                    if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
-                        return networkResponse;
-                    }
-                    const responseToCache = networkResponse.clone();
-                    caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseToCache));
-                    return networkResponse;
-                });
-            })
-        );
-        return;
-    }
-
-    // 策略 3: 其他靜態資源 (Cache-First)
     event.respondWith(
-        caches.match(event.request).then((cachedResponse) => {
-            return cachedResponse || fetch(event.request);
+        caches.match(event.request).then((res) => {
+            return res || fetch(event.request);
         })
     );
 });

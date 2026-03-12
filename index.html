@@ -33,26 +33,23 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* Splash Screen (Strategic Fade - C) */
+        /* Splash Screen (v2.4 Zero-Flash Logic) */
         .splash-layer {
             position: fixed; inset: 0; z-index: 9999;
             background: #0B0B0B; display: flex; align-items: center; justify-content: center;
-            opacity: 0; /* Starts transparent to wait for system icon to clear */
-            pointer-events: none;
-        }
-        .splash-layer.show {
-            opacity: 1; /* Fade IN */
-            transition: opacity 0.6s ease-in;
+            opacity: 1; /* Always visible initially to block home page */
+            pointer-events: auto;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .splash-layer.fade-out {
-            opacity: 0; /* Fade OUT to main app */
-            transition: opacity 0.8s ease-out;
+            opacity: 0;
+            pointer-events: none;
         }
         .splash-img { width: 100%; height: 100%; object-fit: contain; padding: 10%; }
 
         /* Header Logo */
         .header-logo {
-            height: 38px; /* Increased from 24px/28px for stronger presence */
+            height: 40px; /* Strong presence */
             object-fit: contain; margin-bottom: 8px; opacity: 0.95;
         }
 
@@ -69,36 +66,37 @@
         }
         .tab-item.active { color: #F2F2F2; border-bottom: 2px solid #C6A96A; }
 
-        /* Content Grid & Subtle Backplate for Black Artworks */
+        /* Content Grid (Guaranteed Visibility) */
         .main-grid {
             display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
             background: #1a1a1a; padding-bottom: 120px;
         }
         .grid-cell { 
-            /* THE FIX: A subtle dark gray backplate so black PNGs are visible */
-            background: #141414; 
+            background: #141414; /* Micro-glow backplate */
             aspect-ratio: 3/4; overflow: hidden; position: relative;
             display: flex; align-items: center; justify-content: center;
         }
         .grid-cell img {
             width: 100%; height: 100%; object-fit: contain; padding: 8px;
-            transition: transform 0.3s ease;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            opacity: 0; /* Hidden until loaded */
         }
+        .grid-cell img.loaded { opacity: 1; }
         .grid-cell:active img { transform: scale(0.95); }
 
         /* Modal Animation */
         .fade-in { animation: fadeIn 0.4s ease forwards; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Digital Watermark Component */
+        /* Digital Watermark */
         .digital-watermark {
             position: absolute; right: 24px; bottom: 24px;
             font-family: 'Inter', sans-serif; font-weight: 300;
             font-size: 14px; letter-spacing: 0.15em;
-            color: rgba(255, 255, 255, 0.25); /* 25% Opacity White */
-            pointer-events: none; /* Crucial: clicks pass through */
+            color: rgba(255, 255, 255, 0.25);
+            pointer-events: none;
             user-select: none;
-            transform: rotate(-5deg); /* Slight artistic tilt */
+            transform: rotate(-5deg);
             z-index: 50;
         }
     </style>
@@ -111,9 +109,8 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <script type="text/babel">
-        const { useState, useEffect, useMemo } = React;
+        const { useState, useEffect } = React;
 
-        // --- Categories Config (v2.3 Upgraded Names) ---
         const CATEGORIES = [
             { id: 'li', label: 'Line Art', prefix: 'li', count: 18 },
             { id: 'in', label: 'Ink Art', prefix: 'in', count: 18 },
@@ -124,44 +121,38 @@
 
         const App = () => {
             const [filter, setFilter] = useState('li');
-            const [splashState, setSplashState] = useState('hidden'); // hidden -> show -> fade-out -> removed
+            const [splashState, setSplashState] = useState('visible'); // visible -> fade-out -> removed
             const [selectedItem, setSelectedItem] = useState(null);
 
-            // Splash Screen Logic (Strategic Fade C)
             useEffect(() => {
-                // 1. Wait 0.5s for system icon to disappear, then fade IN our image
-                const timerIn = setTimeout(() => setSplashState('show'), 500);
-                
-                // 2. Hold for 1.8s total, then fade OUT
-                const timerOut = setTimeout(() => setSplashState('fade-out'), 2300);
-                
-                // 3. Remove completely from DOM
-                const timerRemove = setTimeout(() => setSplashState('removed'), 3100);
+                // Splash Timeline: Total ~2.3 seconds
+                const timerOut = setTimeout(() => setSplashState('fade-out'), 1800);
+                const timerRemove = setTimeout(() => setSplashState('removed'), 2600);
 
-                return () => { clearTimeout(timerIn); clearTimeout(timerOut); clearTimeout(timerRemove); };
+                return () => { clearTimeout(timerOut); clearTimeout(timerRemove); };
             }, []);
 
             return (
                 <div className="app-container pt-[env(safe-area-inset-top)]">
                     
-                    {/* 1. SPLASH SCREEN (Two-stage animation) */}
+                    {/* 1. SPLASH SCREEN (Starts solid to prevent flashing) */}
                     {splashState !== 'removed' && (
-                        <div className={`splash-layer ${splashState}`}>
-                            <img src="./splash-dbss.png" className="splash-img" alt="DbSS Introduction" 
-                                 onError={(e) => { e.target.style.display = 'none'; }} />
+                        <div className={`splash-layer ${splashState === 'fade-out' ? 'fade-out' : ''}`}>
+                            <img src="./splash-dbss.png" className="splash-img" alt="DbSS" 
+                                 onError={(e) => { e.target.style.opacity = '0'; }} />
                         </div>
                     )}
 
-                    {/* 2. HEADER (Enlarged Logo) */}
+                    {/* 2. HEADER */}
                     <header className="pt-8 pb-5 flex flex-col items-center bg-[#0B0B0B] z-10 relative">
                         <img src="./logo-dbss.png" className="header-logo" alt="DbSS STUDIO" 
-                             onError={(e) => { e.target.style.display = 'none'; }} />
+                             onError={(e) => { e.target.style.opacity = '0'; }} />
                         <span className="text-[9px] tracking-[0.2em] text-[#8A8A8A] uppercase font-light">
                             Archive Foundation
                         </span>
                     </header>
 
-                    {/* 3. TABS (Updated Names) */}
+                    {/* 3. TABS */}
                     <nav className="tab-bar">
                         {CATEGORIES.map(cat => (
                             <div key={cat.id} 
@@ -172,24 +163,23 @@
                         ))}
                     </nav>
 
-                    {/* 4. CONTENT GRID (With Subtle Backplates for Black PNGs) */}
+                    {/* 4. CONTENT GRID (No-Hide Policy) */}
                     <main className="flex-1 overflow-y-auto no-scrollbar">
                         <div className="main-grid">
                             {[...Array(CATEGORIES.find(c => c.id === filter).count)].map((_, i) => {
                                 const id = i + 1;
-                                // Simple resolution sequence for now
                                 const imgPath = `./${filter}${String(id).padStart(3, '0')}_d.png`;
-                                const fallbackPath = `./${filter}${String(id).padStart(2, '0')}_d.png`;
-                                
                                 return (
-                                    <div key={i} className="grid-cell" onClick={() => setSelectedItem({ path: imgPath, fallback: fallbackPath, id: `${filter.toUpperCase()}-${String(id).padStart(3, '0')}` })}>
-                                        <img src={imgPath} loading="lazy" 
+                                    <div key={i} className="grid-cell" onClick={() => setSelectedItem({ path: imgPath, id: `${filter.toUpperCase()}-${String(id).padStart(3, '0')}` })}>
+                                        <img src={imgPath} 
+                                             onLoad={(e) => e.target.classList.add('loaded')}
                                              onError={(e) => {
-                                                 // Try fallback, if fails hide container
+                                                 // If path 1 fails, try simplified path
+                                                 const fallback = `./${filter}${id}_d.png`;
                                                  if (e.target.src.includes(imgPath)) {
-                                                     e.target.src = fallbackPath;
+                                                     e.target.src = fallback;
                                                  } else {
-                                                     e.target.parentElement.style.display = 'none';
+                                                     e.target.style.opacity = '0'; // Keep frame, hide image
                                                  }
                                              }} />
                                     </div>
@@ -202,10 +192,9 @@
                         </div>
                     </main>
 
-                    {/* 5. DETAIL MODAL WITH DIGITAL WATERMARK */}
+                    {/* 5. DETAIL MODAL */}
                     {selectedItem && (
                         <div className="fixed inset-0 z-[100] bg-[#0B0B0B] fade-in flex flex-col">
-                            {/* Top Actions */}
                             <div className="p-6 flex justify-between items-center bg-gradient-to-b from-[#0B0B0B] to-transparent z-10">
                                 <span className="text-[#8A8A8A] text-[10px] tracking-widest uppercase">{selectedItem.id}</span>
                                 <button onClick={() => setSelectedItem(null)} className="text-[#F2F2F2] p-2 hover:opacity-70 transition">
@@ -215,16 +204,11 @@
                                 </button>
                             </div>
                             
-                            {/* Image Preview Area */}
                             <div className="flex-1 flex items-center justify-center p-6 relative overflow-hidden bg-[#0F0F0F]">
-                                <img src={selectedItem.path} className="w-full h-full object-contain max-h-[70vh]" alt="Detail" 
-                                     onError={(e) => { e.target.src = selectedItem.fallback; }}/>
-                                
-                                {/* 🛡️ THE DIGITAL WATERMARK */}
+                                <img src={selectedItem.path} className="w-full h-full object-contain max-h-[70vh]" alt="Detail" />
                                 <div className="digital-watermark">DbSSTUDIO</div>
                             </div>
                             
-                            {/* Metadata & Purchase */}
                             <div className="px-8 pt-8 pb-[calc(32px+env(safe-area-inset-bottom))] bg-[#0B0B0B] border-t border-[#1a1a1a]">
                                 <div className="flex justify-between items-end mb-8">
                                     <div>
@@ -233,7 +217,7 @@
                                     </div>
                                     <span className="text-[#C6A96A] text-lg font-light tracking-wide">$4.99</span>
                                 </div>
-                                <button className="w-full bg-[#C6A96A] text-[#0B0B0B] py-4 rounded-sm text-[12px] tracking-[0.2em] uppercase font-medium hover:bg-[#d8bd82] active:scale-[0.98] transition-all">
+                                <button className="w-full bg-[#C6A96A] text-[#0B0B0B] py-4 rounded-sm text-[12px] tracking-[0.2em] uppercase font-medium">
                                     Acquire Design
                                 </button>
                             </div>
@@ -245,6 +229,12 @@
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js').then(() => console.log('v2.4 Ready'));
+            });
+        }
     </script>
 </body>
 </html>
