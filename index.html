@@ -76,17 +76,19 @@
         .grid-cell img.loaded { opacity: 1; }
         .grid-cell:active img { transform: scale(0.95); }
 
-        /* --- 4. 浮水印鋼印 (修正版：實體半透明白，強制最上層) --- */
+        /* --- 4. 浮水印鋼印 (智慧變色差值版：黑底變白、白底變黑) --- */
         .watermark-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; align-items: center; justify-content: center;
             pointer-events: none; user-select: none;
-            z-index: 999; /* 強制拉到最頂層，保證蓋在圖片上 */
+            z-index: 999; /* 強制拉到最頂層 */
+            mix-blend-mode: difference; /* 核心魔法屬性 */
+            opacity: 0.18; /* 調整為 18% 透明度取得最佳反差平衡 */
         }
         .watermark-text {
             transform: rotate(-35deg);
             font-size: 13vw; font-weight: 800; letter-spacing: 0.15em;
-            color: rgba(255, 255, 255, 0.15); /* 15% 實體半透明白，黑底也絕對清晰 */
+            color: #ffffff; /* 必須搭配純白，difference 才會生效 */
             white-space: nowrap;
         }
 
@@ -235,6 +237,7 @@
                                 
                                 <div className="flex-1 flex items-center justify-center p-6 relative overflow-hidden bg-[#141414]">
                                     <img src={imgPath} className="w-full h-full object-contain max-h-[65vh] z-[10]" alt="Asset" />
+                                    {/* 這是我們的新魔法浮水印 */}
                                     <div className="watermark-overlay">
                                         <div className="watermark-text">DbSSTUDIO</div>
                                     </div>
