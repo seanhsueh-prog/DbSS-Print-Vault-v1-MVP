@@ -1,0 +1,49 @@
+{
+  "version": "2.8.0",
+  "metadata": {
+    "categories": [
+      { "id": "li", "folder": "line-art", "label": "Line Art" },
+      { "id": "in", "folder": "ink-art", "label": "Ink Art" },
+      { "id": "ch", "folder": "characters", "label": "Characters" },
+      { "id": "an", "folder": "anime", "label": "Anime" },
+      { "id": "am", "folder": "animals", "label": "Animals" }
+    ],
+    "placements": {
+      "front": {
+        "label": "Front Print",
+        "recommendedUse": "Front center T-shirt print",
+        "suggestedWidth": "32–38 cm"
+      },
+      "back": {
+        "label": "Back Print",
+        "recommendedUse": "Full back garment print",
+        "suggestedWidth": "35–40 cm"
+      },
+      "left-chest": {
+        "label": "Left Chest",
+        "recommendedUse": "Left chest subtle print",
+        "suggestedWidth": "8–10 cm"
+      }
+    }
+  },
+  "artworks": [
+    {
+      "id": "IN-FRONT-01",
+      "filename": "skull-flower-01.png",
+      "category": "in",
+      "placement": "front"
+    },
+    {
+      "id": "IN-CHEST-01",
+      "filename": "mini-wave.png",
+      "category": "in",
+      "placement": "left-chest"
+    },
+    {
+      "id": "LI-BACK-01",
+      "filename": "dragon-line.png",
+      "category": "li",
+      "placement": "back"
+    }
+  ]
+}
