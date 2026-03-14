@@ -1,12 +1,32 @@
 {
-  "version": "2.8.0",
+  "version": "2.8.0-Auto",
   "metadata": {
     "categories": [
-      { "id": "li", "folder": "line-art", "label": "Line Art" },
-      { "id": "in", "folder": "ink-art", "label": "Ink Art" },
-      { "id": "ch", "folder": "characters", "label": "Characters" },
-      { "id": "an", "folder": "anime", "label": "Anime" },
-      { "id": "am", "folder": "animals", "label": "Animals" }
+      {
+        "id": "li",
+        "folder": "line-art",
+        "label": "Line Art"
+      },
+      {
+        "id": "in",
+        "folder": "ink-art",
+        "label": "Ink Art"
+      },
+      {
+        "id": "ch",
+        "folder": "characters",
+        "label": "Characters"
+      },
+      {
+        "id": "an",
+        "folder": "anime",
+        "label": "Anime"
+      },
+      {
+        "id": "am",
+        "folder": "animals",
+        "label": "Animals"
+      }
     ],
     "placements": {
       "front": {
@@ -28,22 +48,124 @@
   },
   "artworks": [
     {
-      "id": "IN-FRONT-01",
-      "filename": "skull-flower-01.png",
+      "id": "AM-FRONT-1",
+      "filename": "animals-front-001.png",
+      "category": "am",
+      "placement": "front"
+    },
+    {
+      "id": "AM-FRONT-2",
+      "filename": "animals-front-002.png",
+      "category": "am",
+      "placement": "front"
+    },
+    {
+      "id": "AM-FRONT-3",
+      "filename": "animals-front-003.png",
+      "category": "am",
+      "placement": "front"
+    },
+    {
+      "id": "AM-FRONT-4",
+      "filename": "animals-front-004.png",
+      "category": "am",
+      "placement": "front"
+    },
+    {
+      "id": "AN-FRONT-5",
+      "filename": "anime-front-001.png",
+      "category": "an",
+      "placement": "front"
+    },
+    {
+      "id": "AN-FRONT-6",
+      "filename": "anime-front-002.png",
+      "category": "an",
+      "placement": "front"
+    },
+    {
+      "id": "AN-FRONT-7",
+      "filename": "anime-front-003.png",
+      "category": "an",
+      "placement": "front"
+    },
+    {
+      "id": "AN-FRONT-8",
+      "filename": "anime-front-004.png",
+      "category": "an",
+      "placement": "front"
+    },
+    {
+      "id": "IN-FRONT-9",
+      "filename": "ink-front-001.png",
       "category": "in",
       "placement": "front"
     },
     {
-      "id": "IN-CHEST-01",
-      "filename": "mini-wave.png",
+      "id": "IN-FRONT-10",
+      "filename": "ink-front-002.png",
       "category": "in",
-      "placement": "left-chest"
+      "placement": "front"
     },
     {
-      "id": "LI-BACK-01",
-      "filename": "dragon-line.png",
+      "id": "IN-FRONT-11",
+      "filename": "ink-front-003.png",
+      "category": "in",
+      "placement": "front"
+    },
+    {
+      "id": "IN-FRONT-12",
+      "filename": "ink-front-004.png",
+      "category": "in",
+      "placement": "front"
+    },
+    {
+      "id": "IN-FRONT-13",
+      "filename": "ink-front-005.png",
+      "category": "in",
+      "placement": "front"
+    },
+    {
+      "id": "IN-FRONT-14",
+      "filename": "ink-front-006.png",
+      "category": "in",
+      "placement": "front"
+    },
+    {
+      "id": "LI-FRONT-15",
+      "filename": "ink-front-001.png",
       "category": "li",
-      "placement": "back"
+      "placement": "front"
+    },
+    {
+      "id": "LI-FRONT-16",
+      "filename": "ink-front-002.png",
+      "category": "li",
+      "placement": "front"
+    },
+    {
+      "id": "LI-FRONT-17",
+      "filename": "ink-front-003.png",
+      "category": "li",
+      "placement": "front"
+    },
+    {
+      "id": "LI-FRONT-18",
+      "filename": "ink-front-004.png",
+      "category": "li",
+      "placement": "front"
+    },
+    {
+      "id": "LI-FRONT-19",
+      "filename": "ink-front-005.png",
+      "category": "li",
+      "placement": "front"
+    },
+    {
+      "id": "LI-FRONT-20",
+      "filename": "ink-front-006.png",
+      "category": "li",
+      "placement": "front"
     }
   ]
 }
