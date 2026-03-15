@@ -10,7 +10,7 @@
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
     
-    <title>DbSS Print Vault v3.4</title>
+    <title>DbSS Print Vault v3.5</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -31,7 +31,7 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* --- 1. 開場動畫 --- */
+        /* --- 1. 開場動畫 (v3.5 微調比例) --- */
         .splash-layer {
             position: fixed; inset: 0; z-index: 9999;
             background: #0B0B0B; display: flex; align-items: center; justify-content: center;
@@ -39,7 +39,8 @@
             transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .splash-layer.fade-out { opacity: 0; pointer-events: none; }
-        .splash-img { width: 100%; height: 100%; object-fit: cover; }
+        /* 縮小 15% 創造精緻的留白畫布感 */
+        .splash-img { width: 85%; height: 85%; object-fit: contain; } 
 
         /* --- 2. 標誌與導覽 --- */
         .header-logo { height: 42px; object-fit: contain; margin-bottom: 8px; }
@@ -56,13 +57,14 @@
         }
         .tab-item.active { color: #F2F2F2; border-bottom: 2px solid #C6A96A; }
 
-        /* --- 3. 網格設計 --- */
+        /* --- 3. 網格設計 (v3.5 微調底色) --- */
         .main-grid {
             display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
             background: #1a1a1a; padding-bottom: 140px;
         }
+        /* 底色從 #1C1C1C 微調為 #161616，降低對比刺眼感 */
         .grid-cell { 
-            background: #1C1C1C; 
+            background: #161616; 
             aspect-ratio: 3/4; overflow: hidden; position: relative;
             display: flex; align-items: center; justify-content: center;
         }
@@ -73,22 +75,21 @@
         .grid-cell img.loaded { opacity: 1; }
         .grid-cell:active img { transform: scale(0.95); }
 
-        /* --- 4. v3.4 終極完美鋼印 (Ultimate Clean Stamp) --- */
+        /* --- 4. 終極完美鋼印 (保留 v3.4 設定) --- */
         .watermark-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; align-items: center; justify-content: center;
             pointer-events: none; user-select: none;
             z-index: 999; 
-            mix-blend-mode: difference; /* 保持智慧變色，確保遇黑變亮、遇白變暗 */
+            mix-blend-mode: difference; 
             overflow: hidden; 
         }
         .watermark-container {
-            /* 針對 4500x5400 (5:6) 精準計算的對角線角度 */
             transform: rotate(-50.2deg); 
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 160%; /* 確保長度能完全覆蓋對角線的兩端角落 */
+            width: 160%; 
         }
         .watermark-title {
             font-size: 11vw;
@@ -97,8 +98,6 @@
             white-space: nowrap;
             line-height: 1;
             margin-right: -0.22em;
-            
-            /* 【v3.4 核心修正】將主字體調降至 17%，化作一層不干擾圖檔細節的透氣薄霧 */
             color: rgba(255, 255, 255, 0.17); 
         }
         .watermark-subtitle {
@@ -108,8 +107,6 @@
             white-space: nowrap;
             margin-top: 8px;
             margin-right: -0.85em;
-            
-            /* 維持副標題在 30%，保留精緻的定錨感與層次景深 */
             color: rgba(255, 255, 255, 0.30); 
         }
 
@@ -129,7 +126,10 @@
         .nav-btn.active { color: #C6A96A; }
 
         .fade-in { animation: fadeIn 0.4s ease forwards; }
+        .slide-in-right { animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideInRight { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     </style>
 </head>
 <body>
@@ -146,7 +146,8 @@
             const [config, setConfig] = useState(null);
             const [artworks, setArtworks] = useState([]);
             
-            const [page, setPage] = useState('archive');
+            // v3.5 新增 'lobby' 作為首頁狀態
+            const [page, setPage] = useState('lobby'); 
             const [filter, setFilter] = useState('');
             const [splashActive, setSplashActive] = useState(true);
             const [splashFade, setSplashFade] = useState(false);
@@ -184,22 +185,57 @@
                         </div>
                     )}
 
-                    {page === 'archive' && (
-                        <>
-                            <header className="pt-8 pb-5 flex flex-col items-center">
-                                <img src="./logo-dbss.png" className="header-logo" alt="DbSS" />
-                                <span className="text-[9px] tracking-[0.2em] text-[#8A8A8A] uppercase font-light">Archive Foundation</span>
+                    {/* --- PAGE: LOBBY (大廳探索頁) --- */}
+                    {page === 'lobby' && (
+                        <div className="flex-1 flex flex-col fade-in overflow-y-auto no-scrollbar pb-[100px]">
+                            <header className="pt-12 pb-10 flex flex-col items-center">
+                                <img src="./logo-dbss.png" className="h-[36px] object-contain mb-4" alt="DbSS" />
+                                <span className="text-[9px] tracking-[0.3em] text-[#8A8A8A] uppercase font-light">Premium Design Archive</span>
                             </header>
 
-                            <nav className="tab-bar no-scrollbar">
-                                {config.categories.map(cat => (
-                                    <div key={cat.id} 
-                                         onClick={() => setFilter(cat.id)}
-                                         className={`tab-item ${filter === cat.id ? 'active' : ''}`}>
-                                        {cat.label}
-                                    </div>
-                                ))}
-                            </nav>
+                            <div className="px-6 flex flex-col gap-3">
+                                <p className="text-[10px] text-[#555] tracking-widest uppercase mb-2 ml-1">Select Vault Category</p>
+                                
+                                {config.categories.map(cat => {
+                                    const count = artworks.filter(a => a.category === cat.id).length;
+                                    return (
+                                        <div key={cat.id} 
+                                             onClick={() => { setFilter(cat.id); setPage('grid'); }}
+                                             className="flex items-center justify-between p-6 bg-[#121212] border border-[#1a1a1a] rounded-sm cursor-pointer hover:border-[#333] active:scale-[0.98] transition-all">
+                                            <span className="text-[14px] font-mono tracking-widest text-[#F2F2F2] uppercase">{cat.label}</span>
+                                            <div className="flex items-center gap-3">
+                                                <span className="text-[9px] text-[#555] font-mono tracking-wider">{count} ASSETS</span>
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C6A96A" strokeWidth="1.5">
+                                                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* --- PAGE: GRID (分類圖庫頁) --- */}
+                    {page === 'grid' && (
+                        <div className="flex-1 flex flex-col slide-in-right overflow-hidden bg-[#0B0B0B]">
+                            {/* 內部頁面專用導覽列 (帶有返回鍵) */}
+                            <header className="pt-6 pb-4 px-4 flex items-center border-b border-[#1a1a1a] bg-[#0B0B0B] z-40">
+                                <button onClick={() => setPage('lobby')} className="text-[#8A8A8A] hover:text-[#F2F2F2] p-2 mr-2 transition-colors">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                        <path d="M19 12H5M12 19l-7-7 7-7"/>
+                                    </svg>
+                                </button>
+                                <div className="flex-1 flex overflow-x-auto no-scrollbar gap-6 items-center">
+                                    {config.categories.map(cat => (
+                                        <div key={cat.id} 
+                                             onClick={() => setFilter(cat.id)}
+                                             className={`text-[10px] tracking-[0.15em] uppercase whitespace-nowrap cursor-pointer transition-colors pb-1 border-b-2 ${filter === cat.id ? 'text-[#F2F2F2] border-[#C6A96A]' : 'text-[#555] border-transparent'}`}>
+                                            {cat.label}
+                                        </div>
+                                    ))}
+                                </div>
+                            </header>
 
                             <main className="flex-1 overflow-y-auto no-scrollbar">
                                 <div className="main-grid">
@@ -219,27 +255,43 @@
                                         );
                                     })}
                                 </div>
+                                {/* 網格底部緩衝 */}
+                                <div className="py-12 text-center bg-[#0B0B0B]">
+                                    <span className="text-[9px] text-[#333] tracking-[0.3em] font-mono">END OF VAULT</span>
+                                </div>
                             </main>
-                        </>
+                        </div>
                     )}
 
+                    {/* --- PAGE: INFO (全新文案版) --- */}
                     {page === 'info' && (
-                        <div className="flex-1 flex flex-col items-center justify-center p-12 text-center fade-in">
-                            <img src="./logo-dbss.png" className="h-10 mb-12 opacity-90" />
-                            <div className="w-8 h-[1px] bg-[#C6A96A] mb-12"></div>
-                            <p className="text-[13px] text-[#F2F2F2] leading-relaxed font-light tracking-wide mb-6">
-                                DbSS STUDIO: Premium Design Archive for visionary apparel creators.
+                        <div className="flex-1 flex flex-col items-center justify-center p-12 text-center fade-in bg-[#0B0B0B] pb-[100px]">
+                            <img src="./logo-dbss.png" className="h-[28px] mb-3 opacity-90" />
+                            <h2 className="text-[14px] font-bold tracking-[0.35em] mb-10 text-[#F2F2F2] uppercase">Studio</h2>
+                            
+                            <div className="w-8 h-[1px] bg-[#C6A96A] mb-10"></div>
+                            
+                            <p className="text-[12px] text-[#F2F2F2] leading-relaxed font-light tracking-wide mb-8">
+                                A curated archive of premium graphic assets<br/>designed for apparel creators.
                             </p>
+                            
+                            <p className="text-[11px] text-[#8A8A8A] leading-relaxed font-light mb-8">
+                                Each artwork is optimized at<br/>
+                                <span className="font-mono text-[#A0A0A0]">4500 × 5400 px / 300 DPI</span>,<br/>
+                                engineered for high-performance garment printing.
+                            </p>
+                            
                             <p className="text-[11px] text-[#8A8A8A] leading-relaxed font-light">
-                                Optimized at 4500x5400 px / 300 DPI.<br/>
-                                Built for high-performance garment printing.
+                                Assets in the Vault are available for<br/>licensing and production use.
                             </p>
+                            
                             <div className="mt-20 py-2 px-6 border border-[#1a1a1a] rounded-full">
-                                <span className="text-[9px] text-[#555] tracking-widest uppercase">Version 3.4.0 (Ultimate Vault)</span>
+                                <span className="text-[9px] text-[#555] tracking-widest uppercase">Version 3.5.0 (Lobby Edition)</span>
                             </div>
                         </div>
                     )}
 
+                    {/* --- 資產預覽 Modal --- */}
                     {selectedItem && (() => {
                         const catMeta = config.categories.find(c => c.id === selectedItem.category);
                         const placeMeta = config.placements[selectedItem.placement];
@@ -249,7 +301,7 @@
                             <div className="fixed inset-0 z-[100] bg-[#0B0B0B] fade-in flex flex-col">
                                 <div className="p-6 flex justify-between items-center bg-[#0B0B0B] z-[110]">
                                     <span className="text-[#8A8A8A] text-[10px] tracking-widest uppercase">{selectedItem.id}</span>
-                                    <button onClick={() => setSelectedItem(null)} className="text-[#F2F2F2] p-2">
+                                    <button onClick={() => setSelectedItem(null)} className="text-[#F2F2F2] p-2 hover:text-[#C6A96A] transition-colors">
                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2">
                                             <path d="M18 6L6 18M6 6l12 12" />
                                         </svg>
@@ -259,14 +311,13 @@
                                 <div className="flex-1 flex items-center justify-center p-6 relative overflow-hidden bg-[#141414]">
                                     <img src={imgPath} className="w-full h-full object-contain max-h-[65vh] z-[10]" alt="Asset" />
                                     
-                                    {/* v3.4 終極極淡薄霧版鋼印 */}
+                                    {/* 鋼印層 */}
                                     <div className="watermark-overlay">
                                         <div className="watermark-container">
                                             <div className="watermark-title">DbSS VAULT</div>
                                             <div className="watermark-subtitle">AUTHENTIC ARCHIVE</div>
                                         </div>
                                     </div>
-
                                 </div>
                                 
                                 <div className="p-8 border-t border-[#1a1a1a] bg-[#0B0B0B] z-[110]">
@@ -284,7 +335,7 @@
                                         </div>
                                     </div>
 
-                                    <button className="w-full bg-[#C6A96A] text-[#0B0B0B] py-4 text-[12px] tracking-widest uppercase font-semibold">
+                                    <button className="w-full bg-[#C6A96A] text-[#0B0B0B] py-4 text-[12px] tracking-widest uppercase font-semibold active:scale-[0.98] transition-transform">
                                         Acquire Asset
                                     </button>
                                 </div>
@@ -292,8 +343,9 @@
                         );
                     })()}
 
+                    {/* --- 底部導覽列 --- */}
                     <nav className="bottom-nav">
-                        <div className={`nav-btn ${page === 'archive' ? 'active' : ''}`} onClick={() => setPage('archive')}>
+                        <div className={`nav-btn ${page === 'lobby' || page === 'grid' ? 'active' : ''}`} onClick={() => setPage('lobby')}>
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2">
                                 <rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" />
                                 <rect x="14" y="14" width="7" height="7" /><rect x="3" y="14" width="7" height="7" />
