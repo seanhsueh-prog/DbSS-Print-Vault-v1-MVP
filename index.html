@@ -10,7 +10,7 @@
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
     
-    <title>DbSS Print Vault v3.0</title>
+    <title>DbSS Print Vault v3.1</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -73,18 +73,18 @@
         .grid-cell img.loaded { opacity: 1; }
         .grid-cell:active img { transform: scale(0.95); }
 
-        /* --- 4. v3.0 絕對對角線頂級鋼印 (Absolute Diagonal Vault Stamp) --- */
+        /* --- 4. v3.1 終極混合鋼印 (Hybrid Stroke + Fill Premium Stamp) --- */
         .watermark-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; align-items: center; justify-content: center;
             pointer-events: none; user-select: none;
             z-index: 999; 
-            mix-blend-mode: difference; /* 保留智慧變色 */
-            opacity: 0.12; /* 透明度降低至 12%，更透氣不搶戲 */
-            overflow: hidden; /* 防止旋轉後的長字體撐破畫面 */
+            mix-blend-mode: difference; /* 保留黑白智慧變色對比 */
+            /* 移除原本覆蓋全體的 opacity，將透明度控制權交給下方的文字顏色 */
+            overflow: hidden; 
         }
         .watermark-container {
-            /* 針對 4500x5400 (5:6) 精準計算的對角線角度：atan(6/5) = 50.19度 */
+            /* 針對 4500x5400 (5:6) 精準計算的對角線角度 */
             transform: rotate(-50.2deg); 
             display: flex;
             flex-direction: column;
@@ -92,22 +92,28 @@
             width: 160%; /* 確保長度能完全覆蓋對角線的兩端角落 */
         }
         .watermark-title {
-            font-size: 11vw; /* 整體縮小 15% 左右 */
+            font-size: 11vw;
             font-weight: 800; 
-            letter-spacing: 0.22em; /* 稍微拉開字距，讓首尾更貼近角落 */
-            color: #ffffff;
+            letter-spacing: 0.22em;
             white-space: nowrap;
             line-height: 1;
             margin-right: -0.22em;
+            
+            /* 【核心 A+B 混合魔法】 */
+            color: rgba(255, 255, 255, 0.08); /* 內部填色 (Fill)：極透的 8% 白 */
+            -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.35); /* 描邊 (Stroke)：清晰的 35% 白，1.5px */
         }
         .watermark-subtitle {
-            font-size: 2.2vw; /* 極小字體底座 */
+            font-size: 2.2vw;
             font-weight: 500;
-            letter-spacing: 0.85em; /* 超寬字距，創造高級認證感 */
-            color: #ffffff;
+            letter-spacing: 0.85em;
             white-space: nowrap;
             margin-top: 8px;
-            margin-right: -0.85em; /* 平衡寬字距帶來的視覺偏移 */
+            margin-right: -0.85em;
+            
+            /* 副標題特別微調：因為字體極小，外框不能太粗以免糊掉 */
+            color: rgba(255, 255, 255, 0.12); /* 填色微升至 12% 保持可讀性 */
+            -webkit-text-stroke: 0.5px rgba(255, 255, 255, 0.35); /* 描邊縮減至 0.5px */
         }
 
         /* --- 5. 底部導覽列 --- */
@@ -232,7 +238,7 @@
                                 Built for high-performance garment printing.
                             </p>
                             <div className="mt-20 py-2 px-6 border border-[#1a1a1a] rounded-full">
-                                <span className="text-[9px] text-[#555] tracking-widest uppercase">Version 3.0.0 (Vault)</span>
+                                <span className="text-[9px] text-[#555] tracking-widest uppercase">Version 3.1.0 (Hybrid Vault)</span>
                             </div>
                         </div>
                     )}
@@ -256,7 +262,7 @@
                                 <div className="flex-1 flex items-center justify-center p-6 relative overflow-hidden bg-[#141414]">
                                     <img src={imgPath} className="w-full h-full object-contain max-h-[65vh] z-[10]" alt="Asset" />
                                     
-                                    {/* v2.9 新版雙排鋼印 */}
+                                    {/* v3.1 終極混合版鋼印 */}
                                     <div className="watermark-overlay">
                                         <div className="watermark-container">
                                             <div className="watermark-title">DbSS VAULT</div>
