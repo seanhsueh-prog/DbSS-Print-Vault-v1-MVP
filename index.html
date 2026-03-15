@@ -10,7 +10,7 @@
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
     
-    <title>DbSS Print Vault v2.9</title>
+    <title>DbSS Print Vault v3.0</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -73,7 +73,7 @@
         .grid-cell img.loaded { opacity: 1; }
         .grid-cell:active img { transform: scale(0.95); }
 
-        /* --- 4. v2.9 雙排頂級鋼印 (Dual-line Museum Stamp) --- */
+        /* --- 4. v3.0 絕對對角線頂級鋼印 (Absolute Diagonal Vault Stamp) --- */
         .watermark-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; align-items: center; justify-content: center;
@@ -81,29 +81,33 @@
             z-index: 999; 
             mix-blend-mode: difference; /* 保留智慧變色 */
             opacity: 0.12; /* 透明度降低至 12%，更透氣不搶戲 */
+            overflow: hidden; /* 防止旋轉後的長字體撐破畫面 */
         }
         .watermark-container {
-            transform: rotate(-35deg); /* 保留對角線防盜排版 */
+            /* 針對 4500x5400 (5:6) 精準計算的對角線角度：atan(6/5) = 50.19度 */
+            transform: rotate(-50.2deg); 
             display: flex;
             flex-direction: column;
             align-items: center;
+            width: 160%; /* 確保長度能完全覆蓋對角線的兩端角落 */
         }
         .watermark-title {
             font-size: 11vw; /* 整體縮小 15% 左右 */
             font-weight: 800; 
-            letter-spacing: 0.15em;
+            letter-spacing: 0.22em; /* 稍微拉開字距，讓首尾更貼近角落 */
             color: #ffffff;
             white-space: nowrap;
             line-height: 1;
+            margin-right: -0.22em;
         }
         .watermark-subtitle {
             font-size: 2.2vw; /* 極小字體底座 */
             font-weight: 500;
-            letter-spacing: 0.8em; /* 超寬字距，創造高級認證感 */
+            letter-spacing: 0.85em; /* 超寬字距，創造高級認證感 */
             color: #ffffff;
             white-space: nowrap;
             margin-top: 8px;
-            margin-right: -0.8em; /* 平衡寬字距帶來的視覺偏移 */
+            margin-right: -0.85em; /* 平衡寬字距帶來的視覺偏移 */
         }
 
         /* --- 5. 底部導覽列 --- */
@@ -228,7 +232,7 @@
                                 Built for high-performance garment printing.
                             </p>
                             <div className="mt-20 py-2 px-6 border border-[#1a1a1a] rounded-full">
-                                <span className="text-[9px] text-[#555] tracking-widest uppercase">Version 2.9.0 (Vault)</span>
+                                <span className="text-[9px] text-[#555] tracking-widest uppercase">Version 3.0.0 (Vault)</span>
                             </div>
                         </div>
                     )}
