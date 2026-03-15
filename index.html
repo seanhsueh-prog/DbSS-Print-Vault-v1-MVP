@@ -10,7 +10,7 @@
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
     
-    <title>DbSS Print Vault v3.1</title>
+    <title>DbSS Print Vault v3.3</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -73,14 +73,13 @@
         .grid-cell img.loaded { opacity: 1; }
         .grid-cell:active img { transform: scale(0.95); }
 
-        /* --- 4. v3.1 終極混合鋼印 (Hybrid Stroke + Fill Premium Stamp) --- */
+        /* --- 4. v3.3 終極完美鋼印 (Ultimate Clean Stamp) --- */
         .watermark-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; align-items: center; justify-content: center;
             pointer-events: none; user-select: none;
             z-index: 999; 
-            mix-blend-mode: difference; /* 保留黑白智慧變色對比 */
-            /* 移除原本覆蓋全體的 opacity，將透明度控制權交給下方的文字顏色 */
+            mix-blend-mode: difference; /* 保持智慧變色，確保遇黑變亮、遇白變暗 */
             overflow: hidden; 
         }
         .watermark-container {
@@ -99,9 +98,8 @@
             line-height: 1;
             margin-right: -0.22em;
             
-            /* 【核心 A+B 混合魔法】 */
-            color: rgba(255, 255, 255, 0.08); /* 內部填色 (Fill)：極透的 8% 白 */
-            -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.35); /* 描邊 (Stroke)：清晰的 35% 白，1.5px */
+            /* 【核心修正】捨棄所有外緣框線，使用純粹的 22% 填色，達到存在感與護眼的完美平衡 */
+            color: rgba(255, 255, 255, 0.22); 
         }
         .watermark-subtitle {
             font-size: 2.2vw;
@@ -111,9 +109,8 @@
             margin-top: 8px;
             margin-right: -0.85em;
             
-            /* 副標題特別微調：因為字體極小，外框不能太粗以免糊掉 */
-            color: rgba(255, 255, 255, 0.12); /* 填色微升至 12% 保持可讀性 */
-            -webkit-text-stroke: 0.5px rgba(255, 255, 255, 0.35); /* 描邊縮減至 0.5px */
+            /* 副標題字小，稍微提升亮度至 30% 確保閱讀性 */
+            color: rgba(255, 255, 255, 0.30); 
         }
 
         /* --- 5. 底部導覽列 --- */
@@ -238,7 +235,7 @@
                                 Built for high-performance garment printing.
                             </p>
                             <div className="mt-20 py-2 px-6 border border-[#1a1a1a] rounded-full">
-                                <span className="text-[9px] text-[#555] tracking-widest uppercase">Version 3.1.0 (Hybrid Vault)</span>
+                                <span className="text-[9px] text-[#555] tracking-widest uppercase">Version 3.3.0 (Ultimate Vault)</span>
                             </div>
                         </div>
                     )}
@@ -262,7 +259,7 @@
                                 <div className="flex-1 flex items-center justify-center p-6 relative overflow-hidden bg-[#141414]">
                                     <img src={imgPath} className="w-full h-full object-contain max-h-[65vh] z-[10]" alt="Asset" />
                                     
-                                    {/* v3.1 終極混合版鋼印 */}
+                                    {/* v3.3 終極乾淨版鋼印 */}
                                     <div className="watermark-overlay">
                                         <div className="watermark-container">
                                             <div className="watermark-title">DbSS VAULT</div>
