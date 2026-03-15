@@ -10,10 +10,10 @@
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
     
-    <title>DbSS Print Vault v2.8</title>
+    <title>DbSS Print Vault v2.9</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         /* --- 基礎環境 --- */
@@ -31,7 +31,7 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* --- 1. 開場動畫 (滿版震撼) --- */
+        /* --- 1. 開場動畫 --- */
         .splash-layer {
             position: fixed; inset: 0; z-index: 9999;
             background: #0B0B0B; display: flex; align-items: center; justify-content: center;
@@ -39,10 +39,7 @@
             transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .splash-layer.fade-out { opacity: 0; pointer-events: none; }
-        .splash-img { 
-            width: 100%; height: 100%; 
-            object-fit: cover; 
-        }
+        .splash-img { width: 100%; height: 100%; object-fit: cover; }
 
         /* --- 2. 標誌與導覽 --- */
         .header-logo { height: 42px; object-fit: contain; margin-bottom: 8px; }
@@ -59,7 +56,7 @@
         }
         .tab-item.active { color: #F2F2F2; border-bottom: 2px solid #C6A96A; }
 
-        /* --- 3. 網格設計 (微光炭灰，救援黑色圖檔) --- */
+        /* --- 3. 網格設計 --- */
         .main-grid {
             display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
             background: #1a1a1a; padding-bottom: 140px;
@@ -76,20 +73,37 @@
         .grid-cell img.loaded { opacity: 1; }
         .grid-cell:active img { transform: scale(0.95); }
 
-        /* --- 4. 浮水印鋼印 (智慧變色差值版：黑底變白、白底變黑) --- */
+        /* --- 4. v2.9 雙排頂級鋼印 (Dual-line Museum Stamp) --- */
         .watermark-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; align-items: center; justify-content: center;
             pointer-events: none; user-select: none;
-            z-index: 999; /* 強制拉到最頂層 */
-            mix-blend-mode: difference; /* 核心魔法屬性 */
-            opacity: 0.18; /* 調整為 18% 透明度取得最佳反差平衡 */
+            z-index: 999; 
+            mix-blend-mode: difference; /* 保留智慧變色 */
+            opacity: 0.12; /* 透明度降低至 12%，更透氣不搶戲 */
         }
-        .watermark-text {
-            transform: rotate(-35deg);
-            font-size: 13vw; font-weight: 800; letter-spacing: 0.15em;
-            color: #ffffff; /* 必須搭配純白，difference 才會生效 */
+        .watermark-container {
+            transform: rotate(-35deg); /* 保留對角線防盜排版 */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .watermark-title {
+            font-size: 11vw; /* 整體縮小 15% 左右 */
+            font-weight: 800; 
+            letter-spacing: 0.15em;
+            color: #ffffff;
             white-space: nowrap;
+            line-height: 1;
+        }
+        .watermark-subtitle {
+            font-size: 2.2vw; /* 極小字體底座 */
+            font-weight: 500;
+            letter-spacing: 0.8em; /* 超寬字距，創造高級認證感 */
+            color: #ffffff;
+            white-space: nowrap;
+            margin-top: 8px;
+            margin-right: -0.8em; /* 平衡寬字距帶來的視覺偏移 */
         }
 
         /* --- 5. 底部導覽列 --- */
@@ -214,7 +228,7 @@
                                 Built for high-performance garment printing.
                             </p>
                             <div className="mt-20 py-2 px-6 border border-[#1a1a1a] rounded-full">
-                                <span className="text-[9px] text-[#555] tracking-widest uppercase">Version 2.8.0 (DAM)</span>
+                                <span className="text-[9px] text-[#555] tracking-widest uppercase">Version 2.9.0 (Vault)</span>
                             </div>
                         </div>
                     )}
@@ -237,10 +251,15 @@
                                 
                                 <div className="flex-1 flex items-center justify-center p-6 relative overflow-hidden bg-[#141414]">
                                     <img src={imgPath} className="w-full h-full object-contain max-h-[65vh] z-[10]" alt="Asset" />
-                                    {/* 這是我們的新魔法浮水印 */}
+                                    
+                                    {/* v2.9 新版雙排鋼印 */}
                                     <div className="watermark-overlay">
-                                        <div className="watermark-text">DbSSTUDIO</div>
+                                        <div className="watermark-container">
+                                            <div className="watermark-title">DbSS VAULT</div>
+                                            <div className="watermark-subtitle">AUTHENTIC ARCHIVE</div>
+                                        </div>
                                     </div>
+
                                 </div>
                                 
                                 <div className="p-8 border-t border-[#1a1a1a] bg-[#0B0B0B] z-[110]">
